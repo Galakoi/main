@@ -1,12 +1,12 @@
-import { defineConfig } from 'umi';
-import { join } from 'path';
-import defaultSettings from './defaultSettings';
-import proxy from './proxy';
-import routes from './routes';
+import { defineConfig } from "umi";
+import { join } from "path";
+import defaultSettings from "./defaultSettings";
+import proxy from "./proxy";
+import routes from "./routes";
 
 const { REACT_APP_ENV } = process.env;
 export default defineConfig({
-  base: '/',
+  base: "/",
   // 生成hash文件名
   hash: true,
   // antd配置
@@ -21,12 +21,12 @@ export default defineConfig({
     ...defaultSettings,
   },
   locale: {
-    default: 'zh-CN',
+    default: "zh-CN",
     antd: true,
     baseNavigator: true,
   },
   dynamicImport: {
-    loading: '@ant-design/pro-layout/es/PageLoading',
+    loading: "@ant-design/pro-layout/es/PageLoading",
   },
   // 最低兼容至ie 11版本
   targets: {
@@ -34,24 +34,24 @@ export default defineConfig({
   },
   // 路由
   routes,
-  // 主题色
+  // 主题
   theme: {
-    'primary-color': defaultSettings.primaryColor,
+    "primary-color": defaultSettings.primaryColor,
   },
   // 浏览器顶部不显示title
   title: false,
   // 是否忽视
   ignoreMomentLocale: true,
-  proxy: proxy[REACT_APP_ENV || 'dev'],
+  proxy: proxy[REACT_APP_ENV || "dev"],
   manifest: {
-    basePath: '/',
+    basePath: "/",
   },
-  publicPath: '/',
+  publicPath: "/",
   fastRefresh: {},
   nodeModulesTransform: {
-    type: 'none',
+    type: "none",
   },
-  mfsu: {},
+  // mfsu: {},
   webpack5: {},
   exportStatic: {},
 });

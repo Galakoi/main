@@ -9,7 +9,6 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
-    "suppressExcessPropertyErrors": true,
     "noUncheckedIndexedAccess": true,
     "allowJs": true,
     "skipLibCheck": true,

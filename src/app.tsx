@@ -1,39 +1,36 @@
-import { PageLoading } from '@ant-design/pro-layout';
-import { BookOutlined, LinkOutlined } from '@ant-design/icons';
-import { history, Link, useDispatch, useSelector } from 'umi';
-import RightContent from '@/components/RightContent';
-import { namespace, queryCurrentUserEffect } from '@/models/index';
+import { PageLoading } from "@ant-design/pro-layout";
+import { BookOutlined, LinkOutlined } from "@ant-design/icons";
+import { history, Link, useDispatch, useSelector } from "umi";
+import type { RunTimeLayoutConfig } from "umi";
+import RightContent from "@/components/RightContent";
+import { queryCurrentUser } from "./services/user";
+import { message } from "antd";
 
-const isDev = process.env.NODE_ENV === 'development';
-const loginPath = '/user/login/';
+const isDev = process.env.NODE_ENV === "development";
+const loginPath = "/user/login/";
 
 export const initialStateConfig = {
   loading: <PageLoading />,
 };
 
 export const getInitialState = async () => {
-  const dispatch = useDispatch();
-  const dada = useSelector((state: any) => state[namespace]);
+  const fetchUserInfo = async () => {
+    try {
+      const msg = await queryCurrentUser();
+      return msg.data;
+    } catch (error) {
+      message.error("请先登录！");
+      history.push(loginPath);
+    }
 
-  console.log(dada);
-
-  const fetchUserInfo = () => {
-    dispatch({
-      type: queryCurrentUserEffect,
-      payload: {},
-    });
     return undefined;
   };
 
-  // 当前页非登录页
   if (history.location.pathname !== loginPath) {
-    dispatch({
-      type: queryCurrentUserEffect,
-      payload: {},
-    });
+    const currentUser = await fetchUserInfo();
     return {
       fetchUserInfo,
-      currentUser: dada,
+      currentUser,
       settings: {},
     };
   }
@@ -44,20 +41,39 @@ export const getInitialState = async () => {
   };
 };
 
-export const layout = ({ initialState }: any) => {
+export const layout: RunTimeLayoutConfig = ({ initialState }: any) => {
   return {
     rightContentRender: () => <RightContent />,
     disableContentMargin: false,
+    menuDataRender: (menus) => {
+      return menus.map((item) => {
+        return {
+          ...item,
+        };
+      });
+    },
+    menuItemRender: (menu, dom) => {
+      if (menu.isUrl) {
+        return dom;
+      }
+      const linkProps = {
+        to: menu.path || "/404",
+        target: menu.target,
+        rel: "opener",
+      };
+      return <Link {...linkProps}>{dom}</Link>;
+    },
+    // 水印相关设置
     waterMarkProps: {
       content: initialState?.currentUser?.name,
     },
-    // onPageChange: () => {
-    //   // 如果没有登录，重定向到 login
-    //   const { location } = history;
-    //   if (!initialState?.currentUser && location.pathname !== loginPath) {
-    //     history.push(loginPath);
-    //   }
-    // },
+    onPageChange: () => {
+      // 如果没有登录，重定向到 login
+      const { location } = history;
+      if (!initialState?.currentUser && location.pathname !== loginPath) {
+        history.push(loginPath);
+      }
+    },
     links: isDev
       ? [
           <Link to="/~docs">

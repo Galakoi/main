@@ -13,7 +13,7 @@ export async function login(data, options) {
 }
 
 /** 获取当前的用户 GET /api/currentUser */
-export async function queryCurrentUser(options) {
+export async function queryCurrentUser(options: any) {
   return request('/api/currentUser', {
     method: 'GET',
     ...(options || {}),

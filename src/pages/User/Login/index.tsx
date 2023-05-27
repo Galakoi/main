@@ -10,6 +10,7 @@ import logo from '../../../../public/curry.jpg';
 const UserLogin: React.FC = () => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
+  const [loading, setLoading] = useState<boolean>(false)
 
   /**
    * 记住密码
@@ -44,9 +45,13 @@ const UserLogin: React.FC = () => {
    */
   const handleLogin = async (values: any) => {
     message.loading('正在登录中，请稍后...');
+    setLoading(true)
     dispatch({
       type: loginEffect,
       payload: values,
+      callback: () => {
+        setLoading(false)
+      }
     });
   };
 
@@ -103,6 +108,7 @@ const UserLogin: React.FC = () => {
                   size="large"
                   type="primary"
                   htmlType="submit"
+                  loading={loading}
                   style={{ width: '100%' }}
                 >
                   登录
